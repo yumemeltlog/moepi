@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポテンシャル覚醒ワードセッション | もえぴ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Fredoka+One&family=Pacifico&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink:       #FF0090;
+      --pink2:      #FF3DAD;
+      --pink-hot:   #FF007F;
+      --pink-pale:  #FFD6F0;
+      --pink-mid:   #FF69BE;
+      --blue:       #00C8FF;
+      --blue2:      #5DD5FF;
+      --blue-pale:  #C2F4FF;
+      --blue-mid:   #87E8FF;
+      --lavender:   #CC88FF;
+      --holo:       linear-gradient(135deg,#FF9DE2,#B3EAFF,#D4AAFF,#FFDDE1);
+      --yellow:     #FFE100;
+      --white:      #FFFFFF;
+      --dark:       #1A0030;
+      --text:       #2A0050;
+      --text-mid:   #7A30A0;
+      --grad-main:  linear-gradient(135deg, #FF0090, #00C8FF);
+      --grad-hot:   linear-gradient(135deg, #FF007F, #FF69BE);
+      --grad-cloud: linear-gradient(160deg, #FFB3E6 0%, #E8AAFF 40%, #B3D8FF 100%);
+      --grad-hero:  linear-gradient(160deg, #FF90D8 0%, #D4AAFF 50%, #87D4FF 100%);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family:'Noto Sans JP', sans-serif;
+      background:#FFFFFF;
+      color: var(--text);
+      overflow-x:hidden;
+    }
+
+    /* ===== Y2K FLOATING STARS ===== */
+    #y2k-stars {
+      position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+    }
+    .y2k-star {
+      position:absolute; font-size:16px; opacity:0;
+      animation: starFloat linear infinite;
+    }
+    @keyframes starFloat {
+      0%   { opacity:0; transform:translateY(10px) rotate(0deg) scale(0.5); }
+      15%  { opacity:0.8; }
+      85%  { opacity:0.6; }
+      100% { opacity:0; transform:translateY(-100px) rotate(720deg) scale(1.3); }
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      padding:12px 32px;
+      display:flex; justify-content:space-between; align-items:center;
+      background:rgba(255,255,255,0.88);
+      backdrop-filter:blur(20px);
+      border-bottom:3px solid var(--pink);
+      box-shadow: 0 4px 0 var(--blue-mid), 0 6px 24px rgba(255,0,144,0.2);
+    }
+    .nav-brand {
+      font-family:'Pacifico', cursive;
+      font-size:21px;
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      text-decoration:none; filter:drop-shadow(0 1px 2px rgba(255,91,174,0.3));
+    }
+    .nav-links { display:flex; gap:24px; list-style:none; }
+    .nav-links a {
+      font-size:12px; font-weight:700; color:var(--text-mid);
+      text-decoration:none; letter-spacing:1px;
+      transition:color 0.2s;
+    }
+    .nav-links a:hover { color:var(--pink); }
+    .nav-btn {
+      font-family:'Fredoka One', cursive;
+      background: var(--grad-main);
+      color:#fff; font-size:14px;
+      padding:10px 24px; border-radius:999px;
+      text-decoration:none; letter-spacing:1px;
+      box-shadow: 0 4px 0 #c0006e, 0 6px 20px rgba(255,91,174,0.35);
+      transition:all 0.15s; display:inline-block;
+    }
+    .nav-btn:hover { transform:translateY(-2px); box-shadow:0 6px 0 #c0006e, 0 8px 24px rgba(255,91,174,0.5); }
+    .nav-btn:active { transform:translateY(2px); box-shadow:0 2px 0 #c0006e; }
+
+    /* ===== HERO ===== */
+    #hero {
+      min-height:100vh;
+      background: var(--grad-hero);
+      position:relative; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      padding:120px 24px 80px;
+    }
+    /* holographic shimmer overlay */
+    #hero::after {
+      content:'';
+      position:absolute; inset:0; pointer-events:none;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.18) 0%,
+        rgba(255,0,144,0.08) 25%,
+        rgba(0,200,255,0.1) 50%,
+        rgba(204,136,255,0.08) 75%,
+        rgba(255,255,255,0.15) 100%);
+      animation:holoShimmer 6s ease-in-out infinite;
+    }
+    @keyframes holoShimmer {
+      0%,100%{opacity:1;} 50%{opacity:0.5;}
+    }
+    /* star dot bg */
+    #hero::before {
+      content:'';
+      position:absolute; inset:0; z-index:1;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.6) 1.5px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+      background-size: 32px 32px, 18px 18px;
+      background-position: 0 0, 16px 16px;
+    }
+    /* cloud blobs */
+    .hero-blob {
+      position:absolute; border-radius:50%; filter:blur(60px);
+      pointer-events:none; animation:blobPulse ease-in-out infinite;
+    }
+    .hb1{ width:550px;height:550px; background:#FF60C8; opacity:0.55; top:-150px;right:-100px; animation-duration:10s; }
+    .hb2{ width:420px;height:420px; background:#40D0FF; opacity:0.45; bottom:-100px;left:-80px; animation-duration:8s; animation-delay:-4s; }
+    .hb3{ width:320px;height:320px; background:#CC60FF; opacity:0.4; top:35%;left:25%; animation-duration:7s; animation-delay:-2s; }
+    .hb4{ width:200px;height:200px; background:#FF0090; opacity:0.3; bottom:20%;right:15%; animation-duration:9s; animation-delay:-5s; }
+    @keyframes blobPulse { 0%,100%{transform:scale(1) translate(0,0);} 50%{transform:scale(1.08) translate(14px,-14px);} }
+
+    .hero-inner {
+      position:relative; z-index:2;
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:60px; align-items:center;
+      max-width:1080px; width:100%;
+    }
+
+    /* sticker badge */
+    .sticker-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#fff;
+      border:3px solid var(--pink);
+      border-radius:999px;
+      padding:8px 20px;
+      font-family:'Fredoka One', cursive;
+      font-size:12px; letter-spacing:1px; color:var(--pink);
+      box-shadow: 3px 3px 0 var(--pink-mid), 0 4px 14px rgba(255,91,174,0.2);
+      margin-bottom:24px; transform:rotate(-1.5deg);
+    }
+
+    .hero-title {
+      font-family:'Fredoka One', cursive;
+      font-size:clamp(28px, 3.5vw, 46px);
+      line-height:1.35; margin-bottom:20px; color:var(--dark);
+      text-shadow:none;
+    }
+    .hero-title strong {
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      display:inline-block;
+    }
+    .hero-sub {
+      font-size:15px; line-height:2; color:var(--text-mid);
+      margin-bottom:36px; font-weight:400;
+    }
+
+    .btn-primary {
+      display:inline-block;
+      font-family:'Fredoka One', cursive;
+      background: var(--grad-main);
+      color:#fff; font-size:18px; letter-spacing:2px;
+      padding:18px 48px; border-radius:999px;
+      text-decoration:none;
+      box-shadow: 0 6px 0 #b8006a, 0 8px 28px rgba(255,91,174,0.4);
+      transition:all 0.15s; position:relative; overflow:hidden;
+    }
+    .btn-primary::after {
+      content:'';position:absolute;top:-50%;left:-60%;
+      width:35%;height:200%;
+      background:rgba(255,255,255,0.3); transform:skewX(-20deg);
+      animation:gloss 2.5s ease-in-out infinite 0.5s;
+    }
+    @keyframes gloss{ 0%{left:-60%;}100%{left:130%;} }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 9px 0 #b8006a, 0 12px 36px rgba(255,91,174,0.5); }
+    .btn-primary:active { transform:translateY(3px); box-shadow:0 3px 0 #b8006a; }
+
+    /* hero right card */
+    .hero-visual { display:flex; justify-content:center; position:relative; }
+    .hero-float-card {
+      background:#fff;
+      border:3px solid var(--pink-mid);
+      border-radius:32px;
+      padding:40px 32px;
+      text-align:center;
+      box-shadow: 6px 6px 0 var(--blue-mid), 0 20px 60px rgba(255,91,174,0.2);
+      animation:cardBob 5s ease-in-out infinite;
+      max-width:360px; width:100%;
+      position:relative;
+    }
+    @keyframes cardBob { 0%,100%{transform:rotate(-1deg) translateY(0);} 50%{transform:rotate(1deg) translateY(-14px);} }
+    .card-sparkle { font-size:32px; display:block; margin-bottom:14px; animation:spinSlow 10s linear infinite; }
+    @keyframes spinSlow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+    .card-label {
+      font-family:'Fredoka One', cursive;
+      font-size:11px; letter-spacing:3px; text-transform:uppercase;
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:10px;
+    }
+    .card-main {
+      font-family:'Fredoka One', cursive;
+      font-size:22px; color:var(--dark); line-height:1.5; margin-bottom:18px;
+    }
+    .card-price-sticker {
+      display:inline-block;
+      background: var(--grad-main);
+      color:#fff; font-family:'Fredoka One', cursive;
+      font-size:16px; padding:10px 28px; border-radius:999px;
+      box-shadow:0 4px 0 #b8006a;
+    }
+    /* corner stars */
+    .cs { position:absolute; font-size:26px; }
+    .cs.tl{top:-14px;left:-14px;} .cs.tr{top:-14px;right:-14px;}
+    .cs.bl{bottom:-14px;left:-14px;} .cs.br{bottom:-14px;right:-14px;}
+    .cs.tl,.cs.br{ animation:spinSlow 8s linear infinite; }
+    .cs.tr,.cs.bl{ animation:spinSlow 11s linear infinite reverse; }
+
+    /* ===== SECTION BASE ===== */
+    .sec-inner { max-width:960px; margin:0 auto; width:90%; }
+    .sec-label {
+      font-family:'Fredoka One', cursive;
+      font-size:12px; letter-spacing:3px; text-transform:uppercase;
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      display:block; margin-bottom:12px;
+    }
+    .sec-title {
+      font-family:'Fredoka One', cursive;
+      font-size:clamp(24px,3.5vw,38px); line-height:1.3;
+      color:var(--dark); margin-bottom:48px;
+    }
+    .sec-title.center{ text-align:center; }
+
+    /* ===== PROBLEM ===== */
+    #problem {
+      padding:90px 24px;
+      background:linear-gradient(160deg, #FF80CC 0%, #CC80FF 50%, #80DEFF 100%);
+      position:relative; overflow:hidden;
+    }
+    #problem::after {
+      content:'⭐ 💕 ✨ 💫 🌸';
+      position:absolute; bottom:16px; right:20px;
+      font-size:18px; letter-spacing:8px; opacity:0.25; pointer-events:none;
+    }
+    .problem-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px;
+    }
+    .prob-card {
+      background:rgba(255,255,255,0.92);
+      border:3px solid var(--pink);
+      border-radius:24px; padding:28px 22px;
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.15), 0 0 16px rgba(255,0,144,0.2);
+      transition:all 0.2s; backdrop-filter:blur(8px);
+    }
+    .prob-card:hover { transform:translate(-2px,-3px); box-shadow:7px 7px 0 rgba(0,0,0,0.2), 0 0 24px rgba(255,0,144,0.35); }
+    .prob-icon-wrap {
+      width:52px;height:52px; border-radius:50%;
+      background: var(--grad-soft);
+      border:2px solid var(--pink-mid);
+      display:flex;align-items:center;justify-content:center;
+      font-size:24px; margin-bottom:14px;
+    }
+    .prob-card p { font-size:14px; line-height:1.8; color:var(--text); font-weight:500; }
+
+    /* ===== CONCEPT ===== */
+    #concept { padding:100px 24px; background:#fff; }
+    .concept-grid { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
+    .concept-img-wrap { position:relative; }
+    .concept-img-frame {
+      border-radius:28px; overflow:hidden;
+      border:4px solid var(--pink);
+      box-shadow: 8px 8px 0 var(--blue-mid), 0 20px 60px rgba(255,91,174,0.15);
+    }
+    .concept-img-frame img { width:100%; display:block; height:320px; object-fit:cover; }
+    .concept-img-cap {
+      position:absolute;bottom:0;left:0;right:0;
+      background:linear-gradient(transparent, rgba(255,91,174,0.75));
+      padding:24px 18px 18px; color:#fff; text-align:center;
+    }
+    .concept-img-cap .en-c { font-family:'Fredoka One',cursive; font-size:11px; letter-spacing:2px; opacity:0.9; }
+    .concept-img-cap .jp-c { font-size:13px; font-weight:700; margin-top:4px; }
+
+    .deco-sticker {
+      position:absolute;
+      font-family:'Fredoka One',cursive;
+      font-size:11px; font-weight:700;
+      background:#fff; border:3px solid;
+      padding:8px 18px; border-radius:999px;
+      box-shadow:3px 3px 0;
+    }
+    .deco-sticker.s1 { border-color:var(--yellow); color:#a07000; box-shadow-color:var(--yellow); top:-16px;right:16px; transform:rotate(5deg); box-shadow:3px 3px 0 var(--yellow); }
+    .deco-sticker.s2 { border-color:var(--blue); color:#0070a0; bottom:-16px;left:16px; transform:rotate(-4deg); box-shadow:3px 3px 0 var(--blue); }
+
+    .concept-text .sec-label { display:block; margin-bottom:10px; }
+    .concept-text h2 {
+      font-family:'Fredoka One',cursive;
+      font-size:clamp(22px,3vw,34px); color:var(--dark);
+      line-height:1.4; margin-bottom:24px;
+    }
+    .concept-text h2 em { font-style:normal; color:var(--pink); }
+    .concept-text p { font-size:14px; line-height:2; color:var(--text-mid); margin-bottom:12px; }
+    .concept-text p strong { color:var(--pink); font-weight:700; }
+
+    /* ===== FEATURES ===== */
+    #features {
+      padding:100px 24px;
+      background:linear-gradient(160deg, #80DEFF 0%, #CC80FF 50%, #FF80CC 100%);
+      position:relative; overflow:hidden;
+    }
+    #features::before {
+      content:'';position:absolute;inset:0;
+      background-image:radial-gradient(circle,rgba(255,255,255,0.4) 1.5px,transparent 1.5px);
+      background-size:24px 24px; pointer-events:none;
+    }
+    .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; }
+    .feat-card {
+      background:rgba(255,255,255,0.92);
+      border-radius:28px;
+      border:3px solid var(--pink);
+      padding:36px 28px; text-align:center;
+      box-shadow:5px 5px 0 rgba(0,0,0,0.15), 0 0 20px rgba(255,0,144,0.2);
+      transition:all 0.2s; backdrop-filter:blur(8px);
+    }
+    .feat-card:hover { transform:translate(-3px,-4px); box-shadow:8px 8px 0 rgba(0,0,0,0.2), 0 0 32px rgba(255,0,144,0.35); }
+    .feat-badge {
+      display:inline-block;
+      background: var(--grad-main);
+      color:#fff; font-family:'Fredoka One',cursive;
+      font-size:11px; letter-spacing:2px;
+      padding:6px 18px; border-radius:999px;
+      margin-bottom:18px;
+      box-shadow:2px 2px 0 #b8006a;
+    }
+    .feat-emoji { font-size:44px; margin-bottom:14px; display:block; }
+    .feat-card h3 {
+      font-family:'Fredoka One',cursive;
+      font-size:18px; color:var(--dark); line-height:1.5; margin-bottom:14px;
+    }
+    .feat-card p { font-size:13px; line-height:1.9; color:var(--text-mid); }
+
+    /* ===== FOR WHO ===== */
+    #forwho { padding:100px 24px; background:#fff; }
+    .check-list { list-style:none; display:flex; flex-direction:column; gap:14px; }
+    .check-list li {
+      display:flex; align-items:flex-start; gap:16px;
+      background:linear-gradient(135deg, var(--pink-pale), var(--blue-pale));
+      border:2.5px solid var(--pink-mid);
+      border-radius:20px; padding:20px 24px;
+      font-size:14px; line-height:1.8; font-weight:500;
+      box-shadow:3px 3px 0 var(--blue-mid);
+      transition:all 0.2s;
+    }
+    .check-list li:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--blue-mid); }
+    .ck-mark {
+      flex-shrink:0; width:32px; height:32px;
+      background: var(--grad-main);
+      border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff; font-size:16px; font-weight:900;
+      box-shadow:2px 2px 0 #b8006a; margin-top:1px;
+    }
+
+    /* ===== RESULTS ===== */
+    #results {
+      padding:90px 24px;
+      background:linear-gradient(135deg, #FF60B8 0%, #B060FF 50%, #40C8FF 100%);
+    }
+    .results-grid { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; }
+    .result-card {
+      background:rgba(255,255,255,0.92);
+      border-radius:24px;
+      border:3px solid var(--pink);
+      padding:36px 52px; text-align:center;
+      box-shadow:5px 5px 0 rgba(0,0,0,0.15), 0 0 20px rgba(255,0,144,0.25);
+      min-width:180px; transition:all 0.2s; backdrop-filter:blur(8px);
+    }
+    .result-card:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 rgba(0,0,0,0.2), 0 0 32px rgba(255,0,144,0.4); }
+    .result-num {
+      font-family:'Fredoka One',cursive;
+      font-size:56px; line-height:1;
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:10px;
+    }
+    .result-label { font-size:13px; color:var(--text-mid); font-weight:500; }
+
+    /* ===== REVIEWS ===== */
+    #reviews {
+      padding:100px 24px;
+      background:linear-gradient(160deg, #FFB3E8 0%, #E8B3FF 50%, #B3E8FF 100%);
+    }
+    .reviews-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; }
+    .review-card {
+      background:rgba(255,255,255,0.9);
+      border-radius:24px;
+      border:3px solid var(--pink);
+      padding:30px 26px;
+      box-shadow:5px 5px 0 rgba(0,0,0,0.12), 0 0 18px rgba(255,0,144,0.2);
+      transition:all 0.2s; position:relative; backdrop-filter:blur(8px);
+    }
+    .review-card:hover { transform:translate(-2px,-3px); box-shadow:7px 7px 0 rgba(0,0,0,0.18), 0 0 28px rgba(255,0,144,0.35); }
+    .review-deco {
+      position:absolute; top:12px; left:18px;
+      font-family:'Pacifico',cursive; font-size:52px; line-height:1;
+      background: var(--grad-soft);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .review-stars { color:var(--pink); font-size:15px; letter-spacing:3px; margin-bottom:12px; }
+    .review-text { font-size:13px; line-height:2; color:var(--text-mid); margin-bottom:14px; }
+    .review-author { font-size:13px; font-weight:700; color:var(--pink); }
+    .review-attr { font-size:11px; color:var(--text-mid); margin-top:3px; }
+    .review-more { text-align:center; margin-top:32px; }
+    .review-more a {
+      display:inline-block;
+      background:#fff; border:2.5px solid var(--blue);
+      color:var(--text-mid); font-size:13px; font-weight:700;
+      padding:12px 28px; border-radius:999px;
+      text-decoration:none;
+      box-shadow:3px 3px 0 var(--blue-mid);
+      transition:all 0.2s;
+    }
+    .review-more a:hover { transform:translate(-1px,-2px); box-shadow:4px 5px 0 var(--blue-mid); }
+
+    /* ===== PROFILE ===== */
+    #profile { padding:100px 24px; background:#fff; }
+    .profile-wrap {
+      background:linear-gradient(135deg, var(--pink-pale), var(--blue-pale));
+      border:3px solid var(--pink-mid);
+      border-radius:32px; padding:48px;
+      box-shadow:6px 6px 0 var(--blue-mid);
+      display:flex; gap:48px; align-items:center; flex-wrap:wrap;
+    }
+    .profile-avatar {
+      width:190px; height:190px; border-radius:50%; overflow:hidden;
+      border:4px solid #fff;
+      outline:4px solid var(--pink);
+      box-shadow:6px 6px 0 var(--blue-mid), 0 12px 40px rgba(255,91,174,0.2);
+      flex-shrink:0; animation:cardBob 7s ease-in-out infinite;
+    }
+    .profile-avatar img { width:100%;height:100%;object-fit:cover; }
+    .profile-body .pname {
+      font-family:'Pacifico',cursive; font-size:34px;
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:4px;
+    }
+    .profile-body .ptag { font-size:13px; color:var(--text-mid); margin-bottom:22px; font-weight:500; letter-spacing:1px; }
+    .profile-body p { font-size:14px; line-height:2; color:var(--text-mid); margin-bottom:10px; }
+    .profile-link {
+      display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+      font-family:'Fredoka One',cursive;
+      background: var(--grad-main);
+      color:#fff; font-size:14px;
+      padding:12px 28px; border-radius:999px; text-decoration:none;
+      box-shadow:3px 3px 0 #b8006a;
+      transition:all 0.15s;
+    }
+    .profile-link:hover { transform:translate(-1px,-2px); box-shadow:4px 5px 0 #b8006a; }
+
+    /* ===== FINAL CTA ===== */
+    #cta {
+      padding:120px 24px;
+      background:linear-gradient(160deg, #FF40B0 0%, #CC40FF 40%, #40C0FF 100%);
+      text-align:center; position:relative; overflow:hidden;
+    }
+    #cta::before {
+      content:'';position:absolute;inset:0;
+      background-image:
+        radial-gradient(circle,rgba(255,255,255,0.5) 1.5px,transparent 1.5px),
+        radial-gradient(circle,rgba(255,255,255,0.25) 1px,transparent 1px);
+      background-size:28px 28px,18px 18px;
+      background-position:0 0,14px 14px;
+    }
+    .cta-inner { position:relative; z-index:1; max-width:680px; margin:0 auto; }
+    .cta-title {
+      font-family:'Fredoka One',cursive;
+      font-size:clamp(22px,3.5vw,40px); line-height:1.45;
+      color:#fff; margin-bottom:14px;
+      text-shadow: 0 0 20px rgba(255,0,144,0.5), 2px 2px 0 rgba(0,0,0,0.15);
+    }
+    .cta-title strong {
+      color:#FFE100;
+      -webkit-text-fill-color:#FFE100;
+      text-shadow: 0 0 20px rgba(255,225,0,0.6), 2px 2px 0 rgba(0,0,0,0.2);
+    }
+    .cta-sub {
+      font-size:15px; font-weight:700; letter-spacing:3px;
+      color:rgba(255,255,255,0.9); margin-bottom:40px;
+    }
+    .price-box {
+      display:inline-block;
+      background:rgba(255,255,255,0.92); border:4px solid #fff;
+      border-radius:28px; padding:32px 56px;
+      box-shadow:6px 6px 0 rgba(0,0,0,0.15), 0 0 32px rgba(255,255,255,0.4);
+      margin-bottom:32px; backdrop-filter:blur(12px);
+    }
+    .p-label {
+      font-family:'Fredoka One',cursive;
+      font-size:11px; letter-spacing:3px; text-transform:uppercase;
+      color:var(--text-mid); margin-bottom:8px;
+    }
+    .p-value {
+      font-family:'Fredoka One',cursive; font-size:62px; line-height:1;
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .p-tax { font-size:13px; color:var(--text-mid); margin-top:6px; }
+    .btn-cta {
+      display:inline-block;
+      font-family:'Fredoka One',cursive;
+      background: var(--grad-main);
+      color:#fff; font-size:20px; letter-spacing:2px;
+      padding:22px 60px; border-radius:999px; text-decoration:none;
+      box-shadow:0 7px 0 #b8006a, 0 10px 36px rgba(255,91,174,0.45);
+      transition:all 0.15s; position:relative; overflow:hidden;
+    }
+    .btn-cta::after {
+      content:'';position:absolute;top:-50%;left:-60%;
+      width:35%;height:200%;
+      background:rgba(255,255,255,0.3);transform:skewX(-20deg);
+      animation:gloss 2.5s ease-in-out infinite 1s;
+    }
+    .btn-cta:hover { transform:translateY(-3px); box-shadow:0 10px 0 #b8006a, 0 14px 44px rgba(255,91,174,0.55); }
+    .btn-cta:active { transform:translateY(4px); box-shadow:0 3px 0 #b8006a; }
+    .cta-note { margin-top:20px; font-size:13px; color:rgba(255,255,255,0.85); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align:center; padding:28px 24px;
+      background:#fff; border-top:3px solid var(--pink-mid);
+    }
+    .footer-brand {
+      font-family:'Pacifico',cursive; font-size:22px;
+      background: var(--grad-main);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:8px;
+    }
+    .footer-copy { font-size:12px; color:var(--text-mid); }
+
+    /* ===== FADE IN ===== */
+    .fade-in { opacity:0; transform:translateY(22px); transition:all 0.65s ease; }
+    .fade-in.visible { opacity:1; transform:translateY(0); }
+
+    /* ===== HERO IMAGE CARD ===== */
+    .hero-img-wrap {
+      position:relative;
+      max-width:380px; width:100%;
+      animation:cardBob 5s ease-in-out infinite;
+    }
+    .hero-img-card {
+      border-radius:32px; overflow:hidden;
+      border:4px solid var(--pink-mid);
+      box-shadow:8px 8px 0 var(--blue-mid), 0 20px 60px rgba(255,91,174,0.3);
+    }
+    .hero-img-card img {
+      width:100%; display:block;
+      height:440px; object-fit:cover;
+      transition:transform 0.5s ease;
+    }
+    .hero-img-wrap:hover .hero-img-card img { transform:scale(1.04); }
+    .hero-img-overlay {
+      position:absolute; bottom:0; left:0; right:0;
+      background:linear-gradient(transparent 0%, rgba(160,0,90,0.82) 100%);
+      padding:40px 24px 24px; text-align:center;
+    }
+    .hero-img-overlay .card-label {
+      font-family:'Fredoka One',cursive;
+      font-size:11px; letter-spacing:3px; text-transform:uppercase;
+      color:rgba(255,255,255,0.88);
+      -webkit-text-fill-color:rgba(255,255,255,0.88);
+      background:none; display:block; margin-bottom:10px;
+    }
+    .hero-img-overlay .card-price-sticker {
+      display:inline-block;
+      background:rgba(255,255,255,0.95);
+      color:var(--pink); font-family:'Fredoka One',cursive;
+      font-size:17px; padding:10px 30px; border-radius:999px;
+      box-shadow:0 4px 0 rgba(0,0,0,0.12), 0 0 20px rgba(255,255,255,0.5);
+    }
+
+    /* ===== FEATURE IMAGE TOP ===== */
+    .feat-img-top {
+      margin:-36px -28px 22px;
+      height:175px; border-radius:24px 24px 0 0;
+      overflow:hidden;
+    }
+    .feat-img-top img {
+      width:100%; height:100%; object-fit:cover;
+      transition:transform 0.4s ease;
+    }
+    .feat-card:hover .feat-img-top img { transform:scale(1.06); }
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:768px){
+      nav { padding:12px 16px; }
+      .nav-links { display:none; }
+      .hero-inner { grid-template-columns:1fr; text-align:center; gap:40px; }
+      .hero-visual { order:-1; }
+      .hero-img-wrap { max-width:300px; margin:0 auto; }
+      .hero-img-card img { height:320px; }
+      .concept-grid { grid-template-columns:1fr; gap:40px; }
+      .profile-wrap { flex-direction:column; align-items:center; text-align:center; }
+      .profile-avatar { margin:0 auto; }
+      .price-box { padding:28px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Y2K floating stars -->
+  <div id="y2k-stars"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-brand">moepi ✦</a>
+    <ul class="nav-links">
+      <li><a href="#concept">about</a></li>
+      <li><a href="#features">features</a></li>
+      <li><a href="#reviews">voice</a></li>
+      <li><a href="#cta">apply</a></li>
+    </ul>
+    <a href="#cta" class="nav-btn">申し込む ✨</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-blob hb1"></div>
+    <div class="hero-blob hb2"></div>
+    <div class="hero-blob hb3"></div>
+    <div class="hero-blob hb4"></div>
+
+    <div class="hero-inner">
+      <div class="hero-text fade-in">
+        <div class="sticker-badge">✦ Potential Awakening Word Session ✦</div>
+        <h1 class="hero-title">
+          あなたの<strong>「求められている魅力」</strong>を<br>
+          言葉にしたとき、<br>
+          ビジネスは自然と<strong>動き出す</strong>。
+        </h1>
+        <p class="hero-sub">
+          成金四柱推命®︎ × 個別感受力で、<br>
+          あなただけの「売れる言葉」を引き出すセッション。
+        </p>
+        <a href="http://ws.formzu.net/dist/S149989071" class="btn-primary" target="_blank">
+          セッションに申し込む ✨
+        </a>
+      </div>
+
+      <div class="hero-visual fade-in">
+        <div class="hero-img-wrap">
+          <span class="cs tl">⭐</span>
+          <span class="cs tr">💕</span>
+          <span class="cs bl">✨</span>
+          <span class="cs br">💫</span>
+          <div class="hero-img-card">
+            <img src="https://cdn.midjourney.com/5337e2f4-ec0e-4888-8378-7851b144d06d/0_0.png" alt="Y2K Disco Ball & Hearts">
+            <div class="hero-img-overlay">
+              <p class="card-label">✦ Potential Awakening ✦</p>
+              <div class="card-price-sticker">¥25,000（税込）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <div class="sec-inner">
+      <span class="sec-label">for you if...</span>
+      <h2 class="sec-title center fade-in">こんなお悩み、<br>抱えていませんか？</h2>
+      <div class="problem-grid">
+        <div class="prob-card fade-in">
+          <div class="prob-icon-wrap">😔</div>
+          <p>自分らしくビジネスをしているつもりなのに、マネタイズに繋がらない</p>
+        </div>
+        <div class="prob-card fade-in">
+          <div class="prob-icon-wrap">🌀</div>
+          <p>思いっきり自己表現しているはずなのに、ビジネスとして拡大していかない</p>
+        </div>
+        <div class="prob-card fade-in">
+          <div class="prob-icon-wrap">💬</div>
+          <p>自分の強みはわかっているのに、「言葉」にして伝えることが苦手</p>
+        </div>
+        <div class="prob-card fade-in">
+          <div class="prob-icon-wrap">📣</div>
+          <p>発信しても反応がなく、何が刺さるのか・何を変えればいいのかわからない</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCEPT -->
+  <section id="concept">
+    <div class="sec-inner">
+      <div class="concept-grid">
+        <div class="concept-img-wrap fade-in">
+          <div class="concept-img-frame">
+            <img src="https://cdn.midjourney.com/34e560fb-356f-46fb-9b3a-8c3622b7e967/0_3.png"
+              alt="クリスタルボール・占い">
+            <div class="concept-img-cap">
+              <p class="en-c">Your Star Map</p>
+              <p class="jp-c">成金四柱推命®︎があなたの本質的な魅力を照らし出す</p>
+            </div>
+          </div>
+          <div class="deco-sticker s1">✨ 四柱推命®︎ベース</div>
+          <div class="deco-sticker s2">💕 個別感受力で深掘り</div>
+        </div>
+
+        <div class="concept-text fade-in">
+          <span class="sec-label">concept</span>
+          <h2>「求められている自分」で、<em>売れる</em>ようになる。</h2>
+          <p>自己表現するだけではビジネスは動かない。<br>
+          大切なのは、<strong>「あなたに何を求めているか」</strong>を知ること。</p>
+          <p>成金四柱推命®︎をベースに、もえぴの高い個別感受力を掛け合わせたこのセッションでは、あなただけの「求められている魅力」を読み解き、具体的な言葉・振る舞い・発信のかたちまで落とし込みます。</p>
+          <p>「自分らしく」と「売れる」が一致する、その交点を一緒に見つけましょう。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="sec-inner">
+      <span class="sec-label">features</span>
+      <h2 class="sec-title center fade-in">セッションの３つの特徴 ✨</h2>
+      <div class="features-grid">
+        <div class="feat-card fade-in">
+          <div class="feat-img-top">
+            <img src="https://cdn.midjourney.com/49bfbd2c-dd2c-4e95-80cf-4327531875db/0_3.png" alt="クリスタルスター">
+          </div>
+          <span class="feat-badge">Feature 01</span>
+          <h3>成金四柱推命®︎で<br>あなたの本質を読み解く</h3>
+          <p>生年月日・出生時間から導いた命式をもとに、人から求められている・期待されているあなただけの魅力を丁寧にお伝えします。</p>
+        </div>
+        <div class="feat-card fade-in">
+          <div class="feat-img-top">
+            <img src="https://cdn.midjourney.com/beffb072-709f-4b00-b32d-088f5f2133d3/0_0.png" alt="フェリスホイール">
+          </div>
+          <span class="feat-badge">Feature 02</span>
+          <h3>「求められている魅力」が<br>マネタイズに直結する</h3>
+          <p>人から求められているポイントを知る＝ニーズを汲む力。あなたの本質的な魅力を言語化することで、自然とマネタイズに繋がる流れが生まれます。</p>
+        </div>
+        <div class="feat-card fade-in">
+          <div class="feat-img-top">
+            <img src="https://cdn.midjourney.com/38434ed0-779d-4798-965f-4cfb656e7860/0_3.png" alt="ネオンハート">
+          </div>
+          <span class="feat-badge">Feature 03</span>
+          <h3>使える言葉・表現まで<br>徹底的に落とし込む</h3>
+          <p>どんな振る舞いが求められているか、どんな発信が刺さるかを、実際に使える言葉・表現・行動ベースのアドバイスまで具体的にお伝えします。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR WHO -->
+  <section id="forwho">
+    <div class="sec-inner">
+      <span class="sec-label">for who</span>
+      <h2 class="sec-title fade-in">こんな方におすすめです 💕</h2>
+      <ul class="check-list">
+        <li class="fade-in"><span class="ck-mark">✦</span>自分らしくビジネスをしたいけど、なかなか収益に繋がらない20〜30代の女性</li>
+        <li class="fade-in"><span class="ck-mark">✦</span>発信しているのに反応が薄く、何を変えればいいかわからない方</li>
+        <li class="fade-in"><span class="ck-mark">✦</span>「自分の強み」はなんとなくわかるけど、言語化が苦手な方</li>
+        <li class="fade-in"><span class="ck-mark">✦</span>自己表現は全力でしているのに、ビジネスが拡大しない方</li>
+        <li class="fade-in"><span class="ck-mark">✦</span>占いや目に見えない力を信じていて、スピリチュアルが好きな方</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results">
+    <div class="sec-inner">
+      <span class="sec-label">results</span>
+      <h2 class="sec-title center fade-in">実績 ⭐</h2>
+      <div class="results-grid">
+        <div class="result-card fade-in">
+          <div class="result-num">10<span style="font-size:28px">+</span></div>
+          <div class="result-label">有料鑑定実績</div>
+        </div>
+        <div class="result-card fade-in">
+          <div class="result-num">5</div>
+          <div class="result-label">個別継続コンサル</div>
+        </div>
+        <div class="result-card fade-in">
+          <div class="result-num">10<span style="font-size:26px">万</span></div>
+          <div class="result-label">月収達成</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews">
+    <div class="sec-inner">
+      <span class="sec-label">voice</span>
+      <h2 class="sec-title center fade-in">お客様の声 💕</h2>
+      <div class="reviews-grid">
+        <div class="review-card fade-in">
+          <div class="review-deco">"</div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">「自分のことをこんなに深く理解してもらえたのは初めてでした。もえぴさんに言ってもらった言葉が、そのまま私の発信の軸になっています。セッション後から問い合わせが増えました！」</p>
+          <p class="review-author">20代 女性</p><p class="review-attr">フリーランス</p>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-deco">"</div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">「ずっと自己表現はしていたのに売れない…と悩んでいました。もえぴさんに『求められている自分』を教えてもらってから、発信の方向性が一気に定まりました。」</p>
+          <p class="review-author">30代 女性</p><p class="review-attr">個人事業主</p>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-deco">"</div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">「具体的な言葉まで教えてもらえるので、セッション直後から使える！という感覚がありました。自分の魅力を言語化してもらって、自信を持って発信できるようになりました。」</p>
+          <p class="review-author">20代 女性</p><p class="review-attr">クリエイター</p>
+        </div>
+      </div>
+      <div class="review-more">
+        <a href="https://ameblo.jp/moepi-3/entry-12956768968.html" target="_blank">→ 他のお客様の声はこちら ✦</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profile">
+    <div class="sec-inner">
+      <span class="sec-label">profile</span>
+      <h2 class="sec-title fade-in">about moepi ✨</h2>
+      <div class="profile-wrap fade-in">
+        <div class="profile-avatar">
+          <img src="https://i.ibb.co/7xxxCBkm/E77-DF790-33-A0-4514-B46-A-B21-E0-C6-D9-C2-D.webp"
+            alt="もえぴ">
+        </div>
+        <div class="profile-body">
+          <p class="pname">moepi</p>
+          <p class="ptag">もえぴ ／ 成金四柱推命®︎鑑定士</p>
+          <p>成金四柱推命®︎をベースに、人の本質的な魅力と「求められているポイント」を読み解く鑑定士。高い個別感受力を活かした具体的なアドバイスが得意で、セッション後に発信が変わり収益が上がったというお声を多数いただいています。</p>
+          <p>「自分らしさ」と「売れる」を一致させることで、20〜30代女性のビジネス加速をサポートしています。</p>
+          <a href="https://www.threads.com/@moepipipi_uranai" target="_blank" class="profile-link">✦ Threads はこちら</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="cta-inner">
+      <span class="sec-label">apply</span>
+      <h2 class="cta-title fade-in">
+        あなたの<strong>「求められている言葉」</strong>で、<br>ビジネスを動かしていきませんか？
+      </h2>
+      <p class="cta-sub fade-in">✦ &ensp;先着順・受付中&ensp; ✦</p>
+      <div class="price-box fade-in">
+        <p class="p-label">Session Fee</p>
+        <p class="p-value">¥25,000</p>
+        <p class="p-tax">（税込）</p>
+      </div><br>
+      <a href="http://ws.formzu.net/dist/S149989071" class="btn-cta fade-in" target="_blank">
+        申し込みフォームへ進む ✨
+      </a>
+      <p class="cta-note fade-in">フォーム送信後、Threadsよりご連絡いたします。</p>
+    </div>
+  </section>
+
+  <footer>
+    <p class="footer-brand">moepi ✦</p>
+    <p class="footer-copy">© 2025 moepi. All rights reserved.</p>
+  </footer>
+
+  <script>
+    /* ===== Y2K floating stars ===== */
+    const icons=['⭐','💕','✨','💫','🌸','💎','🦋','🌟','💗','🫧'];
+    const c=document.getElementById('y2k-stars');
+    for(let i=0;i<30;i++){
+      const el=document.createElement('div');
+      el.className='y2k-star';
+      el.textContent=icons[Math.floor(Math.random()*icons.length)];
+      el.style.cssText=`
+        left:${Math.random()*100}vw;
+        top:${Math.random()*100}vh;
+        font-size:${12+Math.random()*14}px;
+        animation-delay:${Math.random()*10}s;
+        animation-duration:${6+Math.random()*8}s;
+      `;
+      c.appendChild(el);
+    }
+
+    /* ===== Scroll Fade In ===== */
+    const io=new IntersectionObserver(e=>{
+      e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});
+    },{threshold:0.12});
+    document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+  </script>
+</body>
+</html>
